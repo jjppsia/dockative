@@ -1,0 +1,21 @@
+{
+	"root": true,
+	"extends": [
+		"next/core-web-vitals",
+		"prettier",
+		"plugin:tailwindcss/recommended"
+	],
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["tailwindcss"],
+	"rules": {
+		"tailwindcss/no-custom-classname": "off",
+		"tailwindcss/classnames-order": "error",
+		"no-console": "warn"
+	},
+	"settings": {
+		"tailwindcss": {
+			"callees": ["cn"],
+			"config": "tailwind.config.cjs"
+		}
+	}
+}
