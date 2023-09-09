@@ -1,6 +1,7 @@
-import { Moon, Sun } from 'lucide-react'
+import { ArrowRight, Moon, Sun } from 'lucide-react'
 
 export const Icons = {
+	arrowRight: ArrowRight,
 	moon: Moon,
 	sun: Sun,
 }
