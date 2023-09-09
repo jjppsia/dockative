@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { ClerkProvider } from '@clerk/nextjs'
 
 import { fontSans } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
@@ -18,19 +19,21 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
 	return (
-		<html lang='en' className='h-full' suppressHydrationWarning>
-			<head />
-			<body
-				className={cn(
-					'h-full bg-background font-sans antialiased',
-					fontSans.variable
-				)}
-			>
-				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-					{children}
-					<TailwindIndicator />
-				</ThemeProvider>
-			</body>
-		</html>
+		<ClerkProvider>
+			<html lang='en' className='h-full' suppressHydrationWarning>
+				<head />
+				<body
+					className={cn(
+						'h-full bg-background font-sans antialiased',
+						fontSans.variable
+					)}
+				>
+					<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+						{children}
+						<TailwindIndicator />
+					</ThemeProvider>
+				</body>
+			</html>
+		</ClerkProvider>
 	)
 }
