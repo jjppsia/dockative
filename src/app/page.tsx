@@ -52,16 +52,13 @@ export default function RootPage() {
 					</div>
 					<div className='py-24 sm:py-32'>
 						<div className='mx-auto max-w-7xl px-6 lg:px-8'>
-							<div className='mx-auto max-w-2xl'>
-								<h1 className='text-center text-4xl font-bold tracking-tight sm:text-6xl'>
+							<div className='mx-auto max-w-2xl text-center'>
+								<h1 className='text-4xl font-bold tracking-tight sm:text-6xl'>
 									Chat with any PDF
 								</h1>
 								<p className='mt-6 text-lg leading-8 text-muted-foreground'>
 									Join millions of students, researchers and professionals to
-									instantly answer{' '}
-									<span className='block text-center'>
-										questions and understand research with AI.
-									</span>
+									instantly answer questions and understand research with AI.
 								</p>
 								{isAuthenticated && (
 									<div className='mt-10'>
@@ -86,9 +83,9 @@ export default function RootPage() {
 				</div>
 			</main>
 			<footer>
-				<div className='mx-auto max-w-7xl border-t py-12'>
+				<div className='mx-auto max-w-7xl px-6 py-12 lg:px-8'>
 					<div className='flex items-center justify-between'>
-						<p className='justify-center text-xs text-muted-foreground'>
+						<p className='text-xs text-muted-foreground'>
 							&copy; 2023 Ron Ron Pog, Co. All rights reserved.
 						</p>
 						<ThemeToggle className='-mr-3' size='sm' variant='ghost' />
