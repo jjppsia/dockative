@@ -73,7 +73,7 @@ export default function RootPage() {
 										alt='Image of a chat using ChatPDF'
 										width={1906}
 										height={930}
-										className='rounded-md shadow-2xl ring-1 ring-gray-900/10'
+										className='rounded-md shadow-2xl ring-1 ring-border'
 										priority
 									/>
 								</div>
