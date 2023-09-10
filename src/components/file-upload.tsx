@@ -8,7 +8,6 @@ export default function FileUpload() {
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: { 'application/pdf': ['.pdf'] },
 		maxFiles: 1,
-		onDrop: (acceptedFiles) => console.log(acceptedFiles),
 	})
 
 	return (
