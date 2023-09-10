@@ -91,7 +91,7 @@ export default function RootPage() {
 						<p className='justify-center text-xs text-muted-foreground'>
 							&copy; 2023 Ron Ron Pog, Co. All rights reserved.
 						</p>
-						<ThemeToggle className='-mr-3 self-end' size='sm' variant='ghost' />
+						<ThemeToggle className='-mr-3' size='sm' variant='ghost' />
 					</div>
 				</div>
 			</footer>
