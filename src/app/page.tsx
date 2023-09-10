@@ -2,9 +2,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { auth, UserButton } from '@clerk/nextjs'
 
-import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
+import FileUpload from '@/components/file-upload'
 import { Icons } from '@/components/icons'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export default function RootPage() {
 	const { userId } = auth()
@@ -51,21 +52,22 @@ export default function RootPage() {
 					</div>
 					<div className='py-24 sm:py-32'>
 						<div className='mx-auto max-w-7xl px-6 lg:px-8'>
-							<div className='mx-auto max-w-2xl text-center'>
-								<h1 className='text-4xl font-bold tracking-tight sm:text-6xl'>
+							<div className='mx-auto max-w-2xl'>
+								<h1 className='text-center text-4xl font-bold tracking-tight sm:text-6xl'>
 									Chat with any PDF
 								</h1>
 								<p className='mt-6 text-lg leading-8 text-muted-foreground'>
 									Join millions of students, researchers and professionals to
-									instantly answer questions and understand research with AI.
+									instantly answer{' '}
+									<span className='block text-center'>
+										questions and understand research with AI.
+									</span>
 								</p>
-								<Link
-									href={isAuthenticated ? '/' : '/sign-up'}
-									className={cn(buttonVariants(), 'mt-10')}
-								>
-									{isAuthenticated ? 'Go to chats' : 'Get started'}
-									<Icons.arrowRight className='ml-2 h-4 w-4' />
-								</Link>
+								{isAuthenticated && (
+									<div className='mt-10'>
+										<FileUpload />
+									</div>
+								)}
 							</div>
 							<div className='mt-16 flow-root sm:mt-24'>
 								<div className='-m-2 rounded-xl bg-secondary p-2 ring-1 ring-inset ring-border lg:-m-4 lg:rounded-2xl lg:p-4'>
@@ -84,10 +86,13 @@ export default function RootPage() {
 				</div>
 			</main>
 			<footer>
-				<div className='mx-auto max-w-7xl border-t px-6 py-12 lg:px-8'>
-					<p className='mt-8 text-center text-xs text-muted-foreground md:mt-0'>
-						&copy; 2023 Ron Ron Pog, Co. All rights reserved.
-					</p>
+				<div className='mx-auto max-w-7xl border-t py-12'>
+					<div className='flex items-center justify-between'>
+						<p className='justify-center text-xs text-muted-foreground'>
+							&copy; 2023 Ron Ron Pog, Co. All rights reserved.
+						</p>
+						<ThemeToggle className='-mr-3 self-end' size='sm' variant='ghost' />
+					</div>
 				</div>
 			</footer>
 		</>
