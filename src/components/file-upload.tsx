@@ -1,29 +1,42 @@
 'use client'
 
-import { useDropzone } from 'react-dropzone'
+import { UploadDropzone } from '@uploadthing/react'
 
-import { Icons } from '@/components/icons'
+import '@uploadthing/react/styles.css'
+
+import toast from 'react-hot-toast'
+
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
+import { OurFileRouter } from '@/app/api/uploadthing/core'
 
 export default function FileUpload() {
-	const { getRootProps, getInputProps } = useDropzone({
-		accept: { 'application/pdf': ['.pdf'] },
-		maxFiles: 1,
-	})
-
 	return (
-		<div className='rounded-[20px] border bg-background p-2'>
-			<div
-				{...getRootProps({
-					className:
-						'flex h-32 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed',
-				})}
-			>
-				<input {...getInputProps()} />
-				<Icons.inbox className='h-8 w-8' />
-				<p className='mt-2'>
-					Drag and drop your PDF here, or click to select a file
-				</p>
-			</div>
+		<div className='cursor-pointer rounded-2xl border p-2'>
+			<UploadDropzone<OurFileRouter>
+				className='mt-0 border-border ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+				content={{
+					label: 'Choose a PDF file or drag it here',
+					allowedContent: 'PDF (8MB)',
+				}}
+				appearance={{
+					uploadIcon: 'text-muted-foreground',
+					label: 'text-foreground pointer-events-none',
+					allowedContent: 'text-muted-foreground',
+					button: ({ isUploading }) =>
+						cn(
+							buttonVariants({ size: 'sm' }),
+							isUploading && 'after:bg-green-500'
+						),
+				}}
+				endpoint='pdfUploader'
+				onClientUploadComplete={() =>
+					toast.success('File uploaded successfully!')
+				}
+				onUploadError={() =>
+					toast.error('There was an error uploading your file.')
+				}
+			/>
 		</div>
 	)
 }
