@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
+import { Toaster } from 'react-hot-toast'
 
 import { fontSans } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 				>
 					<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 						{children}
+						<Toaster />
 						<TailwindIndicator />
 					</ThemeProvider>
 				</body>
