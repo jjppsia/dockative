@@ -4,10 +4,12 @@ import { Toaster } from 'react-hot-toast'
 
 import { fontSans } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { ThemeProvider } from '@/components/providers/theme-provider'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
-import { ThemeProvider } from '@/components/theme-provider'
 
 import '@/styles/globals.css'
+
+import ReactQueryProvider from '@/components/providers/react-query-provider'
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -21,21 +23,22 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
 	return (
 		<ClerkProvider>
-			<html lang='en' className='h-full' suppressHydrationWarning>
-				<head />
-				<body
-					className={cn(
-						'h-full bg-background font-sans antialiased',
-						fontSans.variable
-					)}
-				>
-					<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-						{children}
-						<Toaster />
-						<TailwindIndicator />
-					</ThemeProvider>
-				</body>
-			</html>
+			<ReactQueryProvider>
+				<html lang='en' className='h-full' suppressHydrationWarning>
+					<body
+						className={cn(
+							'h-full bg-background font-sans antialiased',
+							fontSans.variable
+						)}
+					>
+						<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+							{children}
+							<Toaster />
+							<TailwindIndicator />
+						</ThemeProvider>
+					</body>
+				</html>
+			</ReactQueryProvider>
 		</ClerkProvider>
 	)
 }
