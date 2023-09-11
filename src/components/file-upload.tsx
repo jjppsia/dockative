@@ -36,7 +36,7 @@ export default function FileUpload() {
 				className='mt-0 border-border ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
 				content={{
 					label: 'Choose a PDF file or drag it here',
-					allowedContent: 'PDF (8MB)',
+					allowedContent: 'PDF (4MB)',
 				}}
 				appearance={{
 					uploadIcon: 'text-muted-foreground',
