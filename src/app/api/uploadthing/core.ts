@@ -3,7 +3,11 @@
 import { auth } from '@clerk/nextjs'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 
-const f = createUploadthing()
+const f = createUploadthing({
+	errorFormatter: (err) => {
+		return { message: err.message }
+	},
+})
 
 const handleAuth = () => {
 	const { userId } = auth()

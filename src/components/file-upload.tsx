@@ -33,9 +33,7 @@ export default function FileUpload() {
 				onClientUploadComplete={() =>
 					toast.success('File uploaded successfully!')
 				}
-				onUploadError={() =>
-					toast.error('There was an error uploading your file.')
-				}
+				onUploadError={(error: Error) => toast.error(error.message)}
 			/>
 		</div>
 	)
