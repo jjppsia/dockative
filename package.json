@@ -17,6 +17,7 @@
 		"@radix-ui/react-slot": "^1.0.2",
 		"@t3-oss/env-nextjs": "^0.6.1",
 		"@total-typescript/ts-reset": "^0.5.1",
+		"@uploadthing/react": "^5.5.0",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.0.0",
 		"dotenv": "^16.3.1",
@@ -28,8 +29,10 @@
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-dropzone": "^14.2.3",
+		"react-hot-toast": "^2.4.1",
 		"tailwind-merge": "^1.14.0",
 		"tailwindcss-animate": "^1.0.7",
+		"uploadthing": "^5.5.3",
 		"zod": "^3.22.2"
 	},
 	"devDependencies": {
