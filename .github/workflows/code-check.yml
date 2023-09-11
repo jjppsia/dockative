@@ -34,6 +34,8 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          UPLOADTHING_SECRET: ${{ secrets.UPLOADTHING_SECRET }}
+          UPLOADTHING_APP_ID: ${{ secrets.UPLOADTHING_APP_ID }}
         run: yarn lint
 
       - name: Format check
