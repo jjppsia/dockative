@@ -4,8 +4,8 @@ import { auth } from '@clerk/nextjs'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 
 const f = createUploadthing({
-	errorFormatter: (err) => {
-		return { message: err.message }
+	errorFormatter: (error) => {
+		return { message: error.message }
 	},
 })
 
@@ -20,7 +20,7 @@ const handleAuth = () => {
 }
 
 export const ourFileRouter = {
-	pdfUploader: f({ pdf: { maxFileCount: 1 } })
+	pdfUploader: f(['pdf'])
 		.middleware(() => handleAuth())
 		.onUploadComplete(async ({ metadata, file }) => {
 			console.log('Upload complete for userId:', metadata.userId)
