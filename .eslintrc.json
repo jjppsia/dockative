@@ -10,7 +10,8 @@
 	"rules": {
 		"tailwindcss/no-custom-classname": "off",
 		"tailwindcss/classnames-order": "error",
-		"no-console": "warn"
+		"no-console": "warn",
+		"no-unused-vars": "warn"
 	},
 	"settings": {
 		"tailwindcss": {
