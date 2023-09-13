@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs'
+import OpenAI from 'openai'
 import { z } from 'zod'
 
 import { db } from '@/lib/db'
@@ -48,11 +49,25 @@ export async function POST(req: Request) {
 		})
 	} catch (error) {
 		if (error instanceof z.ZodError) {
+			// eslint-disable-next-line no-console
+			console.log(`Zod Error: ${error}`)
 			return NextResponse.json({
 				status: 422,
 				error: error.issues,
 			})
 		}
+
+		if (error instanceof OpenAI.APIError) {
+			// eslint-disable-next-line no-console
+			console.log(`OpenAI API Error: ${error}`)
+			return NextResponse.json({
+				status: error.status,
+				error: error.message,
+			})
+		}
+
+		// eslint-disable-next-line no-console
+		console.log(`Internal Server Error: ${error}`)
 
 		return NextResponse.json({
 			status: 500,

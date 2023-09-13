@@ -1,23 +1,20 @@
-import { env } from '@/env.mjs'
-import { Configuration, OpenAIApi } from 'openai-edge'
+import OpenAI from 'openai'
 
-const configuration = new Configuration({
-	apiKey: env.OPENAI_API_KEY,
-})
-
-const openai = new OpenAIApi(configuration)
+const openai = new OpenAI()
 
 export const getEmbeddings = async (text: string) => {
 	try {
-		const response = await openai.createEmbedding({
+		const embedding = await openai.embeddings.create({
 			input: text.replace(/\n/g, ''),
 			model: 'text-embedding-ada-002',
 		})
 
-		const result = await response.json()
-
-		return result.data[0].embedding as number[]
+		return embedding.data[0].embedding
 	} catch (error) {
-		throw new Error(`Error getting embeddings from OpenAI: ${error}`)
+		if (error instanceof OpenAI.APIError) {
+			throw error
+		}
+
+		throw new Error(`Error getting embeddings: ${error}`)
 	}
 }

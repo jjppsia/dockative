@@ -5,6 +5,7 @@ import {
 import { Pinecone, PineconeRecord } from '@pinecone-database/pinecone'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import md5 from 'md5'
+import OpenAI from 'openai'
 
 import { getEmbeddings } from '@/lib/embeddings'
 import { chunkedUpsert } from '@/lib/utils/chunked-upsert'
@@ -27,24 +28,30 @@ export const loadPdfIntoPinecone = async (
 	fileName: string,
 	fileUrl: string
 ) => {
-	const filePath = await downloadPdf(fileUrl, fileName)
+	try {
+		const filePath = await downloadPdf(fileUrl, fileName)
 
-	if (!filePath) {
-		throw new Error('Unable to retrieve file path')
+		if (!filePath) {
+			throw new Error('Unable to retrieve file path')
+		}
+
+		const pdfLoader = new PDFLoader(filePath)
+		const pdfPages = (await pdfLoader.load()) as PDFPage[]
+
+		const documents = await Promise.all(pdfPages.map(prepareDocument))
+		const vectors = await Promise.all(documents.flat().map(embedDocument))
+
+		const index = pinecone.index('chatpdf')
+		const namespace = index.namespace(removeNonAscii(fileKey))
+
+		chunkedUpsert(namespace, vectors)
+	} catch (error) {
+		if (error instanceof OpenAI.APIError) {
+			throw error
+		}
+
+		throw new Error(`Error loading PDF into Pinecone: ${error}`)
 	}
-
-	const pdfLoader = new PDFLoader(filePath)
-	const pdfPages = (await pdfLoader.load()) as PDFPage[]
-
-	const documents = await Promise.all(pdfPages.map(prepareDocument))
-	const vectors = await Promise.all(documents.flat().map(embedDocument))
-
-	const index = pinecone.index('chatpdf')
-	const namespace = index.namespace(removeNonAscii(fileKey))
-
-	chunkedUpsert(namespace, vectors)
-
-	return documents[0]
 }
 
 export const truncateStringByBytes = (str: string, bytes: number) => {
@@ -88,6 +95,10 @@ const embedDocument = async (document: Document): Promise<PineconeRecord> => {
 
 		return vector
 	} catch (error) {
+		if (error instanceof OpenAI.APIError) {
+			throw error
+		}
+
 		throw new Error(`Error embedding document: ${error}`)
 	}
 }
