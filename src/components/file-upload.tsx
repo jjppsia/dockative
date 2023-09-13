@@ -4,26 +4,31 @@ import { UploadDropzone } from '@uploadthing/react'
 
 import '@uploadthing/react/styles.css'
 
+import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/cn'
 import { buttonVariants } from '@/components/ui/button'
 import { OurFileRouter } from '@/app/api/uploadthing/core'
 
 export default function FileUpload() {
+	const router = useRouter()
 	const { mutate } = useMutation({
 		mutationFn: async ({
-			file_key,
-			file_name,
+			fileKey,
+			fileName,
+			fileUrl,
 		}: {
-			file_key: string
-			file_name: string
+			fileKey: string
+			fileName: string
+			fileUrl: string
 		}) => {
 			const response = await axios.post('/api/create-chat', {
-				file_key,
-				file_name,
+				fileKey,
+				fileName,
+				fileUrl,
 			})
 
 			return response.data
@@ -50,22 +55,28 @@ export default function FileUpload() {
 				}}
 				endpoint='pdfUploader'
 				onClientUploadComplete={(res) => {
+					toast.success('File uploaded successfully!')
+
 					if (!res) {
-						return toast.error('There was an error uploading the file.')
+						toast.error('Something went wrong.')
+						return
 					}
 
-					const { key: file_key, name: file_name } = res[0]
+					const { key: fileKey, name: fileName, url: fileUrl } = res[0]
 
 					mutate(
-						{ file_key, file_name },
+						{ fileKey, fileName, fileUrl },
 						{
-							onSuccess: () => toast.success('Chat created successfully!'),
+							onSuccess: (data) => {
+								toast.success('Chat created successfully!')
+								router.push(`/chat/${data.id}`)
+							},
 							onError: () =>
 								toast.error('There was an error creating the chat.'),
 						}
 					)
 				}}
-				onUploadError={(error: Error) => toast.error(error.message)}
+				onUploadError={(error) => toast.error(error.message)}
 			/>
 		</div>
 	)
