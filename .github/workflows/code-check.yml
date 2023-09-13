@@ -31,13 +31,14 @@ jobs:
 
       - name: Lint check
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          UPLOADTHING_SECRET: ${{ secrets.UPLOADTHING_SECRET }}
-          UPLOADTHING_APP_ID: ${{ secrets.UPLOADTHING_APP_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
           PINECONE_ENVIRONMENT: ${{ secrets.PINECONE_ENVIRONMENT }}
+          UPLOADTHING_APP_ID: ${{ secrets.UPLOADTHING_APP_ID }}
+          UPLOADTHING_SECRET: ${{ secrets.UPLOADTHING_SECRET }}
         run: yarn lint
 
       - name: Format check
