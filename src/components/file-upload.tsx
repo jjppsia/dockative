@@ -79,17 +79,17 @@ export default function FileUpload() {
 						{ fileKey, fileName, fileUrl },
 						{
 							onSuccess: ({ data, status }) => {
-								if (status === 200) {
-									toast.success('Chat created successfully!')
-									router.push(`/chat/${data.chatId}`)
+								switch (status) {
+									case 200:
+										toast.success('Chat created successfully!')
+										router.push(`/chat/${data.chatId}`)
+										break
+									case 429:
+										toast.error('Rate limit reached for requests')
+										break
+									default:
+										toast.error('There was an error creating the chat.')
 								}
-
-								if (status === 429) {
-									toast.error('Rate limit reached for requests')
-									return
-								}
-
-								toast.error('There was an error creating the chat.')
 							},
 							onError: (error) => {
 								// eslint-disable-next-line no-console
