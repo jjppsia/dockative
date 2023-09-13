@@ -13,6 +13,8 @@ import { cn } from '@/lib/utils/cn'
 import { buttonVariants } from '@/components/ui/button'
 import { OurFileRouter } from '@/app/api/uploadthing/core'
 
+import { Icons } from './icons'
+
 export default function FileUpload() {
 	const router = useRouter()
 	const { mutate } = useMutation({
@@ -38,19 +40,28 @@ export default function FileUpload() {
 	return (
 		<div className='cursor-pointer rounded-2xl border p-2'>
 			<UploadDropzone<OurFileRouter>
-				className='mt-0 border-border ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
 				content={{
 					label: 'Choose a PDF file or drag it here',
 					allowedContent: 'PDF (4MB)',
+					button: ({ isUploading }) => {
+						return isUploading ? (
+							<Icons.loader2 className='h-4 w-4 animate-spin' />
+						) : null
+					},
 				}}
 				appearance={{
+					container: ({ isUploading }) =>
+						cn(
+							'mt-0 border-border ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+							isUploading && 'cursor-not-allowed'
+						),
 					uploadIcon: 'text-muted-foreground',
 					label: 'text-foreground pointer-events-none',
 					allowedContent: 'text-muted-foreground',
 					button: ({ isUploading }) =>
 						cn(
 							buttonVariants({ size: 'sm' }),
-							isUploading && 'after:bg-green-500'
+							isUploading && 'after:content-none'
 						),
 				}}
 				endpoint='pdfUploader'
@@ -67,12 +78,24 @@ export default function FileUpload() {
 					mutate(
 						{ fileKey, fileName, fileUrl },
 						{
-							onSuccess: (data) => {
-								toast.success('Chat created successfully!')
-								router.push(`/chat/${data.id}`)
+							onSuccess: ({ data, status }) => {
+								if (status === 200) {
+									toast.success('Chat created successfully!')
+									router.push(`/chat/${data.chatId}`)
+								}
+
+								if (status === 429) {
+									toast.error('Rate limit reached for requests')
+									return
+								}
+
+								toast.error('There was an error creating the chat.')
 							},
-							onError: () =>
-								toast.error('There was an error creating the chat.'),
+							onError: (error) => {
+								// eslint-disable-next-line no-console
+								console.error(error)
+								toast.error('There was an error creating the chat.')
+							},
 						}
 					)
 				}}
