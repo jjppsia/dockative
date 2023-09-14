@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils/cn'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 
+// Uploadthing styles must be imported before global styles
+import '@uploadthing/react/styles.css'
 import '@/styles/globals.css'
 
 import ReactQueryProvider from '@/components/providers/react-query-provider'

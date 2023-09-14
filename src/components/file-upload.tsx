@@ -1,19 +1,15 @@
 'use client'
 
-import { UploadDropzone } from '@uploadthing/react'
-
-import '@uploadthing/react/styles.css'
-
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
+import { UploadDropzone } from '@uploadthing/react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
 import { cn } from '@/lib/utils/cn'
 import { buttonVariants } from '@/components/ui/button'
+import { Icons } from '@/components/icons'
 import { OurFileRouter } from '@/app/api/uploadthing/core'
-
-import { Icons } from './icons'
 
 export default function FileUpload() {
 	const router = useRouter()
