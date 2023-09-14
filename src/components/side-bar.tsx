@@ -78,7 +78,7 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 										href='/'
 										className='-mx-2 flex items-center rounded-md border-2 p-2 text-sm font-semibold leading-6'
 									>
-										<Icons.plus className='h-4 w-4 shrink-0' />
+										<Icons.plus className='mr-3 h-4 w-4 shrink-0' />
 										New chat
 									</Link>
 
