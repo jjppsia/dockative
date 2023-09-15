@@ -14,7 +14,7 @@ type ChatPageProps = {
 	}
 }
 
-export default async function Example({ params: { chatId } }: ChatPageProps) {
+export default async function ChatPage({ params: { chatId } }: ChatPageProps) {
 	const { userId } = auth()
 
 	if (!userId) {
@@ -22,9 +22,9 @@ export default async function Example({ params: { chatId } }: ChatPageProps) {
 	}
 
 	const _chats = await db.select().from(chats).where(eq(chats.userId, userId))
-	const isChatExist = _chats.find((chat) => chat.id === parseInt(chatId))
+	const currentChat = _chats.find((chat) => chat.id === parseInt(chatId))
 
-	if (!_chats || !isChatExist) {
+	if (!_chats || !currentChat) {
 		redirect('/')
 	}
 
@@ -32,7 +32,7 @@ export default async function Example({ params: { chatId } }: ChatPageProps) {
 		<>
 			<Sidebar chatId={parseInt(chatId)} chats={_chats} />
 			<Chat />
-			<PdfViewer />
+			<PdfViewer pdfUrl={currentChat.pdfUrl} />
 		</>
 	)
 }
