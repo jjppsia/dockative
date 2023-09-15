@@ -62,13 +62,16 @@ export default function FileUpload() {
 
 				mutate(result, {
 					onSuccess: (data) => {
-						if (!data.sucess) {
+						// eslint-disable-next-line no-console
+						console.log(data.success)
+
+						if (!data.success) {
 							toast.error('There was an error creating your chat.')
 							return
 						}
 
 						toast.success('Chat created successfully!')
-						// router.push(`/chat/${data.chatId}`)
+						router.push(`/chat/${data.chatId}`)
 					},
 					onError: () => toast.error('There was an error creating your chat.'),
 				})
