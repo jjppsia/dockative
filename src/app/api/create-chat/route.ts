@@ -1,17 +1,18 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs'
-import OpenAI from 'openai'
 import { z } from 'zod'
 
 import { db } from '@/lib/db'
 import { chats } from '@/lib/db/schema'
 import { loadPdfIntoPinecone } from '@/lib/pinecone'
+import { getS3Url } from '@/lib/s3/client'
 
 const createChatSchema = z.object({
 	fileKey: z.string(),
 	fileName: z.string(),
-	fileUrl: z.string(),
 })
+
+export type CreateChatSchema = z.infer<typeof createChatSchema>
 
 export async function POST(req: Request) {
 	try {
@@ -19,15 +20,16 @@ export async function POST(req: Request) {
 
 		if (!userId) {
 			return NextResponse.json({
+				success: false,
 				status: 401,
-				error: 'Unauthorized',
+				error: 'Unauthorized.',
 			})
 		}
 
 		const json = await req.json()
-		const { fileKey, fileName, fileUrl } = createChatSchema.parse(json)
+		const { fileKey, fileName } = createChatSchema.parse(json)
 
-		await loadPdfIntoPinecone(fileKey, fileName, fileUrl)
+		const documents = await loadPdfIntoPinecone(fileKey)
 
 		const chatId = await db
 			.insert(chats)
@@ -35,43 +37,33 @@ export async function POST(req: Request) {
 				userId,
 				fileKey,
 				pdfName: fileName,
-				pdfUrl: fileUrl,
+				pdfUrl: getS3Url(fileKey),
 			})
 			.returning({
 				insertedId: chats.id,
 			})
 
 		return NextResponse.json({
+			success: true,
 			status: 200,
 			data: {
 				chatId: chatId[0].insertedId,
+				documents,
 			},
 		})
 	} catch (error) {
 		if (error instanceof z.ZodError) {
-			// eslint-disable-next-line no-console
-			console.log(`Zod Error: ${error}`)
 			return NextResponse.json({
+				success: false,
 				status: 422,
 				error: error.issues,
 			})
 		}
 
-		if (error instanceof OpenAI.APIError) {
-			// eslint-disable-next-line no-console
-			console.log(`OpenAI API Error: ${error}`)
-			return NextResponse.json({
-				status: error.status,
-				error: error.message,
-			})
-		}
-
-		// eslint-disable-next-line no-console
-		console.log(`Internal Server Error: ${error}`)
-
 		return NextResponse.json({
+			success: false,
 			status: 500,
-			error: 'Internal Server Error',
+			error: 'Internal Server Error.',
 		})
 	}
 }
