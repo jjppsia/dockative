@@ -11,10 +11,8 @@ export const getEmbeddings = async (text: string) => {
 
 		return embedding.data[0].embedding
 	} catch (error) {
-		if (error instanceof OpenAI.APIError) {
-			throw error
-		}
-
-		throw new Error(`Error getting embeddings: ${error}`)
+		// eslint-disable-next-line no-console
+		console.error(`Error from getting embeddings: ${error}`)
+		throw error
 	}
 }
