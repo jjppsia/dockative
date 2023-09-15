@@ -20,7 +20,7 @@ export const chunkedUpsert = async (
 					await namespace.upsert([...chunk])
 				} catch (error) {
 					// eslint-disable-next-line no-console
-					console.log('Error upserting chunk', error)
+					console.error(`Error upserting chunk: ${error}`)
 				}
 			})
 		)
