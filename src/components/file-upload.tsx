@@ -33,22 +33,19 @@ export default function FileUpload() {
 		onDropRejected: (fileRejections) => {
 			const { errors } = fileRejections[0]
 
-			if (errors[0].code === '') {
-				toast.error('File size must be less than 4MB.')
-				return
+			switch (errors[0].code) {
+				case 'file-too-large':
+					toast.error('File size must be less than 4MB.')
+					break
+				case 'file-invalid-type':
+					toast.error('File type must be PDF.')
+					break
+				case 'too-many-files':
+					toast.error('Only one file can be uploaded at a time.')
+					break
+				default:
+					toast.error('There was an error uploading your file.')
 			}
-
-			if (errors[0].code === 'file-invalid-type') {
-				toast.error('File type must be PDF.')
-				return
-			}
-
-			if (errors[0].code === 'too-many-files') {
-				toast.error('Only one file can be uploaded at a time.')
-				return
-			}
-
-			toast.error('There was an error uploading your file.')
 		},
 		onDropAccepted: async (acceptedFiles) => {
 			const file = acceptedFiles[0]
