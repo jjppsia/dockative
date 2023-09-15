@@ -1,71 +1,77 @@
-import {
-	Document,
-	RecursiveCharacterTextSplitter,
-} from '@pinecone-database/doc-splitter'
 import { Pinecone, PineconeRecord } from '@pinecone-database/pinecone'
+import { Document } from 'langchain/document'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import md5 from 'md5'
-import OpenAI from 'openai'
 
 import { getEmbeddings } from '@/lib/embeddings'
+import { downloadFromS3 } from '@/lib/s3/server'
 import { chunkedUpsert } from '@/lib/utils/chunked-upsert'
-import { downloadPdf } from '@/lib/utils/download-pdf'
 import { removeNonAscii } from '@/lib/utils/remove-non-ascii'
+import { truncateStringByBytes } from '@/lib/utils/truncate-string'
 
-export const pinecone = new Pinecone()
+const pinecone = new Pinecone()
 
 type PDFPage = {
 	pageContent: string
 	metadata: {
-		loc: {
-			pageNumber: number
-		}
+		loc: { pageNumber: number }
 	}
 }
 
-export const loadPdfIntoPinecone = async (
-	fileKey: string,
-	fileName: string,
-	fileUrl: string
-) => {
+export const loadPdfIntoPinecone = async (fileKey: string) => {
+	const fileName = await downloadFromS3(fileKey)
+
+	const pdfLoader = new PDFLoader(fileName)
+	const pdfPages = (await pdfLoader.load()) as PDFPage[]
+
+	const splitter = new RecursiveCharacterTextSplitter({
+		chunkSize: 1000,
+		chunkOverlap: 200,
+	})
+
+	const documents = await Promise.all(
+		pdfPages.map((page) => prepareDocument(page, splitter))
+	)
+	const vectors = await Promise.all(documents.flat().map(embedDocument))
+
+	const index = pinecone.index('chatpdf')
+	const namespace = index.namespace(removeNonAscii(fileKey))
+
+	chunkedUpsert(namespace, vectors)
+
+	return documents[0]
+}
+
+const embedDocument = async (document: Document): Promise<PineconeRecord> => {
 	try {
-		const filePath = await downloadPdf(fileUrl, fileName)
+		const embedding = await getEmbeddings(document.pageContent)
+		const hash = md5(document.pageContent)
 
-		if (!filePath) {
-			throw new Error('Unable to retrieve file path')
+		return {
+			id: hash,
+			values: embedding,
+			metadata: {
+				pageNumber: document.metadata.pageNumber as number,
+				text: document.metadata.text as string,
+				hash: document.metadata.hash as string,
+			},
 		}
-
-		const pdfLoader = new PDFLoader(filePath)
-		const pdfPages = (await pdfLoader.load()) as PDFPage[]
-
-		const documents = await Promise.all(pdfPages.map(prepareDocument))
-		const vectors = await Promise.all(documents.flat().map(embedDocument))
-
-		const index = pinecone.index('chatpdf')
-		const namespace = index.namespace(removeNonAscii(fileKey))
-
-		chunkedUpsert(namespace, vectors)
 	} catch (error) {
-		if (error instanceof OpenAI.APIError) {
-			throw error
-		}
-
-		throw new Error(`Error loading PDF into Pinecone: ${error}`)
+		// eslint-disable-next-line no-console
+		console.error(`Error from embedding document: ${error}`)
+		throw error
 	}
 }
 
-export const truncateStringByBytes = (str: string, bytes: number) => {
-	const encoder = new TextEncoder()
-
-	return new TextDecoder('utf-8').decode(encoder.encode(str).slice(0, bytes))
-}
-
-const prepareDocument = async (page: PDFPage) => {
-	let { pageContent, metadata } = page
+const prepareDocument = async (
+	pdfPage: PDFPage,
+	splitter: RecursiveCharacterTextSplitter
+): Promise<Document[]> => {
+	let { pageContent, metadata } = pdfPage
 
 	pageContent = pageContent.replace(/\n/g, '')
 
-	const splitter = new RecursiveCharacterTextSplitter()
 	const documents = await splitter.splitDocuments([
 		new Document({
 			pageContent,
@@ -76,29 +82,13 @@ const prepareDocument = async (page: PDFPage) => {
 		}),
 	])
 
-	return documents
-}
-
-const embedDocument = async (document: Document): Promise<PineconeRecord> => {
-	try {
-		const embeddings = await getEmbeddings(document.pageContent)
-		const hash = md5(document.pageContent)
-
-		const vector = {
-			id: hash,
-			values: embeddings,
+	return documents.map((document: Document) => {
+		return {
+			pageContent: document.pageContent,
 			metadata: {
-				text: document.metadata.text as string,
-				pageNumber: document.metadata.pageNumber as number,
+				...document.metadata,
+				hash: md5(document.pageContent),
 			},
 		}
-
-		return vector
-	} catch (error) {
-		if (error instanceof OpenAI.APIError) {
-			throw error
-		}
-
-		throw new Error(`Error embedding document: ${error}`)
-	}
+	})
 }
