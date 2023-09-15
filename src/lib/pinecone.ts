@@ -25,10 +25,7 @@ export const loadPdfIntoPinecone = async (fileKey: string) => {
 	const pdfLoader = new PDFLoader(fileName)
 	const pdfPages = (await pdfLoader.load()) as PDFPage[]
 
-	const splitter = new RecursiveCharacterTextSplitter({
-		chunkSize: 1000,
-		chunkOverlap: 200,
-	})
+	const splitter = new RecursiveCharacterTextSplitter()
 
 	const documents = await Promise.all(
 		pdfPages.map((page) => prepareDocument(page, splitter))
@@ -54,7 +51,6 @@ const embedDocument = async (document: Document): Promise<PineconeRecord> => {
 			metadata: {
 				pageNumber: document.metadata.pageNumber as number,
 				text: document.metadata.text as string,
-				hash: document.metadata.hash as string,
 			},
 		}
 	} catch (error) {
@@ -82,13 +78,5 @@ const prepareDocument = async (
 		}),
 	])
 
-	return documents.map((document: Document) => {
-		return {
-			pageContent: document.pageContent,
-			metadata: {
-				...document.metadata,
-				hash: md5(document.pageContent),
-			},
-		}
-	})
+	return documents
 }
