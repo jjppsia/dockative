@@ -1,5 +1,6 @@
 import {
 	ArrowRight,
+	FileBox,
 	Inbox,
 	Loader2,
 	Menu,
@@ -13,7 +14,7 @@ import {
 
 export const Icons = {
 	arrowRight: ArrowRight,
-	inbox: Inbox,
+	fileBox: FileBox,
 	loader2: Loader2,
 	menu: Menu,
 	messageSquare: MessageSquare,
