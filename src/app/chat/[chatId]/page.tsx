@@ -31,7 +31,7 @@ export default async function ChatPage({ params: { chatId } }: ChatPageProps) {
 	return (
 		<>
 			<Sidebar chatId={parseInt(chatId)} chats={_chats} />
-			<Chat />
+			<Chat chatId={parseInt(chatId)} />
 			<PdfViewer pdfUrl={currentChat.pdfUrl} />
 		</>
 	)
