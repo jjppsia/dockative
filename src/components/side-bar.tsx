@@ -6,7 +6,7 @@ import { UserButton } from '@clerk/nextjs'
 import { Dialog, Transition } from '@headlessui/react'
 
 import { Chat } from '@/lib/db/schema'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/lib/utils'
 import { Icons } from '@/components/icons'
 import { ThemeToggle } from '@/components/theme-toggle'
 
@@ -35,7 +35,7 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 						leaveFrom='opacity-100'
 						leaveTo='opacity-0'
 					>
-						<div className='fixed inset-0 bg-gray-900/80' />
+						<div className='fixed inset-0 bg-background/80' />
 					</Transition.Child>
 
 					<div className='fixed inset-0 flex'>
@@ -66,17 +66,17 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 										>
 											<span className='sr-only'>Close sidebar</span>
 											<Icons.x
-												className='h-6 w-6 text-white'
+												className='h-6 w-6 text-foreground'
 												aria-hidden='true'
 											/>
 										</button>
 									</div>
 								</Transition.Child>
-								<div className='flex grow flex-col gap-y-5 overflow-y-auto bg-background px-6 py-3 pb-2'>
+								<div className='flex grow flex-col gap-y-5 overflow-y-auto border-r bg-background px-6 py-3 pb-2'>
 									{/* New chat button */}
 									<Link
 										href='/'
-										className='-mx-2 flex items-center rounded-md border-2 p-2 text-sm font-semibold leading-6'
+										className='-mx-2 flex items-center rounded-md border-2 p-2 text-sm font-semibold leading-6 shadow-md'
 									>
 										<Icons.plus className='mr-3 h-4 w-4 shrink-0' />
 										New chat
@@ -93,18 +93,15 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 																href={`/chat/${chat.id}`}
 																scroll={false}
 																className={cn(
-																	chat.id === chatId
-																		? 'bg-secondary text-foreground'
-																		: 'text-muted-foreground hover:bg-secondary hover:text-foreground',
-																	'group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6'
+																	'group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground shadow-sm hover:bg-secondary hover:text-foreground',
+																	chat.id === chatId &&
+																		'bg-secondary text-foreground shadow-md'
 																)}
 															>
 																<Icons.messageSquare
 																	className={cn(
-																		chat.id === chatId
-																			? 'text-foreground'
-																			: 'text-muted-foreground group-hover:text-foreground',
-																		'h-4 w-4 shrink-0'
+																		'h-4 w-4 shrink-0 text-muted-foreground group-hover:text-foreground',
+																		chat.id === chatId && 'text-foreground'
 																	)}
 																	aria-hidden='true'
 																/>
@@ -125,15 +122,19 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 
 			<div className='hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col'>
 				<div className='flex grow flex-col gap-y-5 overflow-y-auto border-r px-6 py-3'>
+					<div className='-mx-2 flex items-center justify-between'>
+						<ThemeToggle size='sm' variant='ghost' />
+						<UserButton afterSignOutUrl='/' />
+					</div>
+
 					{/* New chat button */}
 					<Link
 						href='/'
-						className='-mx-2 flex items-center rounded-md border-2 p-2 text-sm font-semibold leading-6'
+						className='-mx-2 flex items-center rounded-md border-2 p-2 text-sm font-semibold leading-6 shadow-md'
 					>
 						<Icons.plus className='mr-3 h-4 w-4 shrink-0' />
 						New chat
 					</Link>
-
 					{/* Chat list */}
 					<nav className='flex flex-1 flex-col'>
 						<ul role='list' className='flex flex-1 flex-col gap-y-7'>
@@ -145,18 +146,15 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 												href={`/chat/${chat.id}`}
 												scroll={false}
 												className={cn(
-													chat.id === chatId
-														? 'bg-secondary text-foreground'
-														: 'text-muted-foreground hover:bg-secondary hover:text-foreground',
-													'group flex items-center rounded-md p-2 text-sm font-semibold leading-6'
+													'group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground shadow-sm hover:bg-secondary hover:text-foreground',
+													chat.id === chatId &&
+														'bg-secondary text-foreground shadow-md'
 												)}
 											>
 												<Icons.messageSquare
 													className={cn(
-														chat.id === chatId
-															? 'text-foreground'
-															: 'text-muted-foreground group-hover:text-foreground',
-														'mr-3 h-4 w-4 shrink-0'
+														'h-4 w-4 shrink-0 text-muted-foreground group-hover:text-foreground',
+														chat.id === chatId && 'text-foreground'
 													)}
 													aria-hidden='true'
 												/>
@@ -168,17 +166,13 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 									))}
 								</ul>
 							</li>
-							<li className='-mx-2 mt-auto flex items-center justify-between'>
-								<ThemeToggle size='sm' variant='ghost' />
-								<UserButton afterSignOutUrl='/' />
-							</li>
 						</ul>
 					</nav>
 				</div>
 			</div>
 
 			{/* Topbar */}
-			<div className='sticky top-0 z-40 flex items-center gap-x-6 p-4 shadow-sm sm:px-6 lg:hidden'>
+			<div className='sticky top-0 z-40 flex items-center gap-x-6 bg-background p-4 shadow-sm sm:px-6 lg:hidden'>
 				<button
 					type='button'
 					className='-m-2.5 p-2.5 lg:hidden'
