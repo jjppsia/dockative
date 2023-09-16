@@ -10,7 +10,7 @@ import { chats } from '@/lib/db/schema'
 
 export const runtime = 'edge'
 
-export const openai = new OpenAI()
+const openai = new OpenAI()
 
 type ChatRequestJson = {
 	messages: ChatCompletionMessageParam[]
