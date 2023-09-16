@@ -1,16 +1,19 @@
-import { Pinecone, PineconeRecord } from '@pinecone-database/pinecone'
-import { Document } from 'langchain/document'
+import { env } from '@/env.mjs'
+import {
+	Document,
+	RecursiveCharacterTextSplitter,
+} from '@pinecone-database/doc-splitter'
+import { utils, Vector } from '@pinecone-database/pinecone'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import md5 from 'md5'
 
 import { getEmbeddings } from '@/lib/embeddings'
 import { downloadFromS3 } from '@/lib/s3/server'
-import { chunkedUpsert } from '@/lib/utils/chunked-upsert'
-import { removeNonAscii } from '@/lib/utils/remove-non-ascii'
-import { truncateStringByBytes } from '@/lib/utils/truncate-string'
-
-const pinecone = new Pinecone()
+import {
+	getPineconeClient,
+	removeNonAscii,
+	truncateStringByBytes,
+} from '@/lib/utils'
 
 type PDFPage = {
 	pageContent: string
@@ -19,7 +22,7 @@ type PDFPage = {
 	}
 }
 
-export const loadPdfIntoPinecone = async (fileKey: string) => {
+export const loadS3IntoPinecone = async (fileKey: string) => {
 	const fileName = await downloadFromS3(fileKey)
 
 	const pdfLoader = new PDFLoader(fileName)
@@ -32,15 +35,17 @@ export const loadPdfIntoPinecone = async (fileKey: string) => {
 	)
 	const vectors = await Promise.all(documents.flat().map(embedDocument))
 
-	const index = pinecone.index('chatpdf')
-	const namespace = index.namespace(removeNonAscii(fileKey))
+	const pinecone = await getPineconeClient()
+	const index = pinecone.Index(env.PINECONE_INDEX_NAME)
 
-	chunkedUpsert(namespace, vectors)
+	const namespace = removeNonAscii(fileKey)
+
+	await utils.chunkedUpsert(index, vectors, namespace, 10)
 
 	return documents[0]
 }
 
-const embedDocument = async (document: Document): Promise<PineconeRecord> => {
+const embedDocument = async (document: Document): Promise<Vector> => {
 	try {
 		const embedding = await getEmbeddings(document.pageContent)
 		const hash = md5(document.pageContent)
