@@ -24,10 +24,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
 	return (
 		<ClerkProvider>
 			<ReactQueryProvider>
-				<html lang='en' className='h-full' suppressHydrationWarning>
+				<html lang='en' suppressHydrationWarning>
 					<body
 						className={cn(
-							'h-full bg-background font-sans antialiased',
+							'min-h-screen bg-background font-sans antialiased',
 							fontSans.variable
 						)}
 					>
