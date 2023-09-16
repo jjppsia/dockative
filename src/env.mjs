@@ -8,6 +8,7 @@ export const env = createEnv({
 		OPENAI_API_KEY: z.string().min(1),
 		PINECONE_API_KEY: z.string().min(1),
 		PINECONE_ENVIRONMENT: z.string().min(1),
+		PINECONE_INDEX_NAME: z.string().min(1),
 	},
 	client: {
 		NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
