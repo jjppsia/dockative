@@ -30,13 +30,11 @@ export const uploadToS3 = async (file: File) => {
 					(progress.loaded * 100) / progress.total
 				)
 
-				console.log(`Uploading to S3: ${progressPercentage}%`)
+				console.log(`Uploading file: ${progressPercentage}%`)
 			})
 			.promise()
 
-		await upload.then(() =>
-			console.log(`Successfully uploaded to S3: ${fileName}`)
-		)
+		await upload.then(() => console.log('File has been successfully uploaded.'))
 
 		return Promise.resolve({
 			fileKey,
