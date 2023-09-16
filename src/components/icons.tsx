@@ -8,6 +8,7 @@ import {
 	Moon,
 	MoreHorizontal,
 	Plus,
+	Send,
 	Sun,
 	X,
 } from 'lucide-react'
@@ -21,6 +22,7 @@ export const Icons = {
 	moon: Moon,
 	moreHorizontal: MoreHorizontal,
 	plus: Plus,
+	send: Send,
 	sun: Sun,
 	x: X,
 }
