@@ -20,7 +20,7 @@ export default function Chat({ chatId }: ChatProps) {
 	return (
 		<main className='lg:pl-72'>
 			<div className='xl:pr-[calc(100%/2)]'>
-				<div className='relative flex min-h-screen flex-col px-4 py-10 dark:bg-neutral-800 sm:px-6 lg:px-8 lg:py-6'>
+				<div className='relative flex min-h-screen flex-col px-4 py-10 sm:px-6 lg:px-8 lg:py-6'>
 					<div className='flex-1'>
 						<ChatMessage messages={messages} />
 					</div>
