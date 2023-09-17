@@ -6,7 +6,7 @@ import { ChatCompletionMessageParam } from 'openai/resources/chat'
 
 import { getContext } from '@/lib/context'
 import { db } from '@/lib/db'
-import { chats } from '@/lib/db/schema'
+import { messages as _messages, chats } from '@/lib/db/schema'
 
 export const runtime = 'edge'
 
@@ -19,6 +19,7 @@ type ChatRequestJson = {
 
 export async function POST(req: Request) {
 	const { messages, chatId } = (await req.json()) as ChatRequestJson
+
 	const _chats = await db.select().from(chats).where(eq(chats.id, chatId))
 
 	if (_chats.length === 0) {
@@ -37,6 +38,7 @@ export async function POST(req: Request) {
 	const fileKey = _chats[0].fileKey
 
 	const lastMessage = messages[messages.length - 1]
+
 	const context = await getContext(lastMessage.content!, fileKey)
 
 	const prompt: ChatCompletionMessageParam[] = [
@@ -67,7 +69,22 @@ export async function POST(req: Request) {
 		stream: true,
 	})
 
-	const stream = OpenAIStream(response)
+	const stream = OpenAIStream(response, {
+		onStart: async () => {
+			await db.insert(_messages).values({
+				chatId,
+				role: 'user',
+				content: lastMessage.content!,
+			})
+		},
+		onCompletion: async (completion) => {
+			await db.insert(_messages).values({
+				chatId,
+				role: 'system',
+				content: completion,
+			})
+		},
+	})
 
 	return new StreamingTextResponse(stream)
 }
