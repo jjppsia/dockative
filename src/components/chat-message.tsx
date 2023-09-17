@@ -24,7 +24,7 @@ export default function ChatMessage({ messages }: ChatMessageProps) {
 								'rounded-lg border p-2 text-sm shadow-md',
 								message.role === 'user'
 									? 'max-w-[48%] bg-primary text-primary-foreground'
-									: 'max-w-[48%] dark:bg-secondary'
+									: 'max-w-[48%] bg-secondary'
 							)}
 						>
 							<p>{message.content}</p>
