@@ -1,15 +1,32 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { auth, UserButton } from '@clerk/nextjs'
+import { eq } from 'drizzle-orm'
 
+import { db } from '@/lib/db'
+import { Chat, chats } from '@/lib/db/schema'
+import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import FileUpload from '@/components/file-upload'
 import { Icons } from '@/components/icons'
 import { ThemeToggle } from '@/components/theme-toggle'
 
-export default function RootPage() {
+export default async function RootPage() {
 	const { userId } = auth()
 	const isAuthenticated = !!userId
+
+	let lastChat: Chat | undefined = undefined
+
+	if (isAuthenticated) {
+		const userChats = await db
+			.select()
+			.from(chats)
+			.where(eq(chats.userId, userId))
+
+		if (userChats.length > 0) {
+			lastChat = userChats[userChats.length - 1]
+		}
+	}
 
 	return (
 		<>
@@ -63,6 +80,15 @@ export default function RootPage() {
 								{isAuthenticated && (
 									<div className='mt-10'>
 										<FileUpload />
+										{lastChat && (
+											<Link
+												href={`/chats/${lastChat.id}`}
+												className={cn(buttonVariants(), 'mt-4')}
+											>
+												Go to chats
+												<Icons.arrowRight className='ml-2 h-4 w-4' />
+											</Link>
+										)}
 									</div>
 								)}
 							</div>
