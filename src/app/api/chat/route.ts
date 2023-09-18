@@ -20,9 +20,9 @@ type ChatRequestJson = {
 export async function POST(req: Request) {
 	const { messages, chatId } = (await req.json()) as ChatRequestJson
 
-	const _chats = await db.select().from(chats).where(eq(chats.id, chatId))
+	const userChats = await db.select().from(chats).where(eq(chats.id, chatId))
 
-	if (_chats.length === 0) {
+	if (userChats.length === 0) {
 		return NextResponse.json(
 			{
 				success: false,
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 		)
 	}
 
-	const fileKey = _chats[0].fileKey
+	const fileKey = userChats[0].fileKey
 
 	const lastMessage = messages[messages.length - 1]
 
