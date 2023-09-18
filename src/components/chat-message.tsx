@@ -1,4 +1,5 @@
 import { Message } from 'ai/react'
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
 
 import { cn } from '@/lib/utils'
 import { Icons } from '@/components/icons'
@@ -31,13 +32,13 @@ export default function ChatMessage({ messages, isLoading }: ChatMessageProps) {
 					>
 						<div
 							className={cn(
-								'rounded-lg border p-2 text-sm shadow-md',
+								'prose prose-neutral rounded-lg border p-2 text-sm shadow-md dark:prose-invert',
 								message.role === 'user'
 									? 'max-w-[80%] bg-primary text-primary-foreground md:max-w-[60%] xl:max-w-[80%] 2xl:max-w-[48%]'
 									: 'max-w-[80%] bg-secondary md:max-w-[60%] xl:max-w-[90%] 2xl:max-w-[48%]'
 							)}
 						>
-							<p>{message.content}</p>
+							<ReactMarkdown>{message.content}</ReactMarkdown>
 						</div>
 					</div>
 				)
