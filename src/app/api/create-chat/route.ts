@@ -17,8 +17,9 @@ export type CreateChatSchema = z.infer<typeof createChatSchema>
 export async function POST(req: Request) {
 	try {
 		const { userId } = auth()
+		const isAuthenticated = !!userId
 
-		if (!userId) {
+		if (!isAuthenticated) {
 			return NextResponse.json({
 				success: false,
 				status: 401,
