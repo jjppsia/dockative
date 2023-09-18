@@ -12,9 +12,9 @@ export const downloadFromS3 = async (fileKey: string) => {
 
 		const s3 = new AWS.S3({
 			params: {
-				Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME,
+				Bucket: env.NEXT_PUBLIC_S3_BUCKET_NAME,
 			},
-			region: process.env.NEXT_PUBLIC_S3_REGION,
+			region: env.NEXT_PUBLIC_S3_REGION,
 		})
 
 		const obj = await s3
