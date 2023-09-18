@@ -1,7 +1,6 @@
 import {
 	ArrowRight,
 	FileBox,
-	Inbox,
 	Loader2,
 	Menu,
 	MessageSquare,
