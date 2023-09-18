@@ -16,21 +16,25 @@ type ChatPageProps = {
 
 export default async function ChatPage({ params: { chatId } }: ChatPageProps) {
 	const { userId } = auth()
+	const isAuthenticated = !!userId
 
-	if (!userId) {
+	if (!isAuthenticated) {
 		redirect('/sign-in')
 	}
 
-	const _chats = await db.select().from(chats).where(eq(chats.userId, userId))
-	const currentChat = _chats.find((chat) => chat.id === parseInt(chatId))
+	const userChats = await db
+		.select()
+		.from(chats)
+		.where(eq(chats.userId, userId))
+	const currentChat = userChats.find((chat) => chat.id === parseInt(chatId))
 
-	if (!_chats || !currentChat) {
+	if (!userChats || !currentChat) {
 		redirect('/')
 	}
 
 	return (
 		<>
-			<Sidebar chatId={parseInt(chatId)} chats={_chats} />
+			<Sidebar chatId={parseInt(chatId)} chats={userChats} />
 			<Chat chatId={parseInt(chatId)} />
 			<PdfViewer pdfUrl={currentChat.pdfUrl} />
 		</>

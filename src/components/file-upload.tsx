@@ -63,7 +63,7 @@ export default function FileUpload() {
 				mutate(result, {
 					onSuccess: ({ chatId }) => {
 						toast.success('Chat created successfully!')
-						router.push(`/chat/${chatId}`)
+						router.push(`/chats/${chatId}`)
 					},
 					onError: () => toast.error('There was an error creating your chat.'),
 				})

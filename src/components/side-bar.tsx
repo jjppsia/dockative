@@ -90,7 +90,7 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 													{chats.map((chat) => (
 														<li key={chat.id}>
 															<Link
-																href={`/chat/${chat.id}`}
+																href={`/chats/${chat.id}`}
 																scroll={false}
 																className={cn(
 																	'group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground shadow-sm hover:bg-secondary hover:text-foreground',
@@ -140,10 +140,10 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 						<ul role='list' className='flex flex-1 flex-col gap-y-7'>
 							<li>
 								<ul role='list' className='-mx-2 space-y-2'>
-									{chats.map((chat) => (
+									{chats.toReversed().map((chat) => (
 										<li key={chat.id}>
 											<Link
-												href={`/chat/${chat.id}`}
+												href={`/chats/${chat.id}`}
 												scroll={false}
 												className={cn(
 													'group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground shadow-sm hover:bg-secondary hover:text-foreground',
