@@ -96,8 +96,8 @@ export default async function RootPage() {
 							<div className='mt-16 flow-root sm:mt-24'>
 								<div className='-m-2 rounded-xl bg-secondary p-2 ring-1 ring-inset ring-border lg:-m-4 lg:rounded-2xl lg:p-4'>
 									<Image
-										src='/assets/dockative.png'
-										alt='Image of a chat using Dockative'
+										src='/assets/doconvo.png'
+										alt='Image of a chat using Doconvo'
 										width={1919}
 										height={930}
 										className='rounded-md shadow-2xl ring-1 ring-border'

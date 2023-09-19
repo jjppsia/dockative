@@ -13,10 +13,10 @@ import ReactQueryProvider from '@/components/providers/react-query-provider'
 
 export const metadata: Metadata = {
 	title: {
-		template: '%s | Dockative',
-		default: 'Dockative',
+		template: '%s | Doconvo',
+		default: 'Doconvo',
 	},
-	description: 'Dockative is a platform that lets you chat with pdfs.',
+	description: 'Doconvo is a platform that lets you chat with pdfs.',
 }
 
 type RootLayoutProps = {
