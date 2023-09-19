@@ -98,8 +98,8 @@ export default async function RootPage() {
 									<Image
 										src='/assets/doconvo.png'
 										alt='Image of a chat using Doconvo'
-										width={1919}
-										height={930}
+										width={1904}
+										height={931}
 										className='rounded-md shadow-2xl ring-1 ring-border'
 										priority
 									/>
