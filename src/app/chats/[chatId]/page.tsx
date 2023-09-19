@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { auth } from '@clerk/nextjs'
 import { eq } from 'drizzle-orm'
@@ -8,10 +9,12 @@ import Chat from '@/components/chat'
 import PdfViewer from '@/components/pdf-viewer'
 import Sidebar from '@/components/side-bar'
 
+export const metadata: Metadata = {
+	title: 'Chats',
+}
+
 type ChatPageProps = {
-	params: {
-		chatId: string
-	}
+	params: { chatId: string }
 }
 
 export default async function ChatPage({ params: { chatId } }: ChatPageProps) {
@@ -26,6 +29,7 @@ export default async function ChatPage({ params: { chatId } }: ChatPageProps) {
 		.select()
 		.from(chats)
 		.where(eq(chats.userId, userId))
+
 	const currentChat = userChats.find((chat) => chat.id === parseInt(chatId))
 
 	if (!userChats || !currentChat) {
