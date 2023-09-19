@@ -140,7 +140,7 @@ export default function Sidebar({ chatId, chats }: SidebarProps) {
 						<ul role='list' className='flex flex-1 flex-col gap-y-7'>
 							<li>
 								<ul role='list' className='-mx-2 space-y-2'>
-									{chats.toReversed().map((chat) => (
+									{chats.map((chat) => (
 										<li key={chat.id}>
 											<Link
 												href={`/chats/${chat.id}`}
